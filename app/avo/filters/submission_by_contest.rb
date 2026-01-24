@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class Avo::Filters::SubmissionByContest < Avo::Filters::SelectFilter
   self.name = "Contest"
 
-  def apply(request, query, value)
+  def apply(_request, query, value)
     query.where(contest_id: value)
   end
 
   def options
-    Contest.all.pluck(:name, :id).to_h
+    Contest.pluck(:name, :id).to_h
   end
 end

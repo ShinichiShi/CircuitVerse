@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Avo::Filters::SubmissionByUser < Avo::Filters::BooleanFilter
   self.name = "Has Winner"
 
-  def apply(request, query, value)
+  def apply(_request, query, value)
     return query if value.blank?
 
     if value["has_winner"]

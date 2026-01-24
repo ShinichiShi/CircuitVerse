@@ -3,9 +3,9 @@
 class Avo::Filters::ContestStatus < Avo::Filters::SelectFilter
   self.name = "Status"
 
-  def apply(request, query, value)
+  def apply(_request, query, value)
     return query if value.blank?
-    
+
     # Filter by the actual enum value
     query.where(status: value)
   end

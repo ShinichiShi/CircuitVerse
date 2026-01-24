@@ -3,7 +3,7 @@
 class Avo::Filters::WinnerFilter < Avo::Filters::BooleanFilter
   self.name = "Winner Status"
 
-  def apply(request, query, value)
+  def apply(_request, query, value)
     if value["winners"]
       query.where(winner: true)
     elsif value["non_winners"]

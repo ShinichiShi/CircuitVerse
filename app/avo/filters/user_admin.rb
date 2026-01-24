@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Avo::Filters::UserAdmin < Avo::Filters::BooleanFilter
   self.name = "User Type"
 
-  def apply(request, query, value)
+  def apply(_request, query, value)
     return query if value.blank?
 
     if value["admin"]
