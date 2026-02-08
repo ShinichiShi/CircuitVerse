@@ -73,33 +73,34 @@ Resources to migrate (in this order):
 - [x] Avo installed
 - [x] added `admin2` as the route for accessing avo dashboard
 - [x] added `app/avo/resources` as the base resources, Authentication wired to `current_user.admin?`
-- [ ] Migrate the following panels:
-  - [ ] Navigation
-    - [ ] Announcements
-    - [ ] Assignments
-    - [ ] Collaborations
-    - [ ] Contests
-    - [ ] Contest Winners
-    - [ ] Custom Mails
-    - [ ] Featured Circuits
-    - [ ] Forum Categories
-    - [ ] Forum Posts
-    - [ ] Forum Subscriptions
-    - [ ] Forum Threads
-    - [ ] Grades
-    - [ ] Groups
-    - [ ] Group Members
-    - [ ] Issue Circuits Data
-    - [ ] Noticed Notifications
-    - [ ] Pending Invitations
-    - [ ] Projects
-    - [ ] Project Data
-    - [ ] Push Subscriptions
-    - [ ] Stars
-    - [ ] Submission Votes
-    - [ ] Tags
-    - [ ] Taggings
-    - [ ] Users
+- [x] Migrate the following panels:
+  - [x] Navigation
+    - [x] Announcements
+    - [x] Assignments
+    - [x] Collaborations
+    - [x] Contests
+    - [x] Contest Winners
+    - [x] Custom Mails
+    - [x] Featured Circuits
+    - [x] Forum Categories
+    - [x] Forum Posts
+    - [x] Forum Subscriptions
+    - [x] Forum Threads
+    - [x] Grades
+    - [x] Groups
+    - [x] Group Members
+    - [x] Issue Circuits Data
+    - [x] Noticed Notifications
+    - [x] Pending Invitations
+    - [x] Projects
+    - [x] Project Data
+    - [x] Push Subscriptions
+    - [x] Stars
+    - [x] Submission
+    - [x] Submission Votes
+    - [x] Tags
+    - [x] Taggings
+    - [x] Users
 
   - [ ] ActiveStorage
     - [ ] Attachments
