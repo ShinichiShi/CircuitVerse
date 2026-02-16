@@ -55,13 +55,12 @@ class Avo::Resources::Users < Avo::BaseResource
       field :confirmed_at, as: :date_time, readonly: true
       field :confirmation_sent_at, as: :date_time, readonly: true
       field :unconfirmed_email, as: :text, readonly: true
-      field :confirmation_token, as: :text, readonly: true, hide_on: %i[index show]
       field :reset_password_sent_at, as: :date_time, readonly: true
       field :remember_created_at, as: :date_time, readonly: true
     end
 
     def profile_fields
-      field :projects_count, as: :number, readonly: true
+      field :projects_count, as: :number
       field :created_at, as: :date_time, readonly: true, sortable: true
       field :updated_at, as: :date_time, readonly: true
       field :profile_picture, as: :file, is_image: true
@@ -83,21 +82,4 @@ class Avo::Resources::Users < Avo::BaseResource
       field :noticed_notifications, as: :has_many
       field :push_subscriptions, as: :has_many
     end
-
-  public
-
-  def filters
-    %i[
-      Admin Subscribed Name Email EducationalInstitute Locale Provider Uid
-      CurrentSignInIp LastSignInIp UnconfirmedEmail Id SignInCount ProjectsCount
-      CurrentSignInAt LastSignInAt ConfirmedAt ConfirmationSentAt CreatedAt UpdatedAt
-    ].each do |f|
-      filter "Avo::Filters::Users::#{f}".constantize
-    end
-  end
-
-  def actions
-    action Avo::Actions::Users::ExportSelected
-    action Avo::Actions::Users::DeleteSelected
-  end
 end
