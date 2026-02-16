@@ -4,15 +4,6 @@ class Avo::Resources::CustomMail < Avo::BaseResource
   self.title = :subject
   self.includes = %i[sender]
   self.model_class = ::CustomMail
-  self.search = {
-    query: lambda {
-      query.ransack(
-        subject_cont: params[:q],
-        body_cont: params[:q],
-        m: "or"
-      ).result(distinct: false)
-    }
-  }
 
   def fields
     field :id, as: :id, link_to_resource: true
