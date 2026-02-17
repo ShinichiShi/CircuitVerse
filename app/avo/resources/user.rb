@@ -1,20 +1,9 @@
 # frozen_string_literal: true
 
-class Avo::Resources::Users < Avo::BaseResource
+class Avo::Resources::User < Avo::BaseResource
   self.title = :name
   self.includes = %i[projects groups_owned group_members]
   self.model_class = ::User
-  self.search = {
-    query: lambda {
-      query.ransack(
-        name_cont: params[:q],
-        email_cont: params[:q],
-        educational_institute_cont: params[:q],
-        m: "or"
-      ).result(distinct: false)
-    }
-  }
-
   def fields
     basic_fields
     authentication_fields
@@ -60,7 +49,7 @@ class Avo::Resources::Users < Avo::BaseResource
     end
 
     def profile_fields
-      field :projects_count, as: :number
+      field :projects_count, as: :number, readonly: true
       field :created_at, as: :date_time, readonly: true, sortable: true
       field :updated_at, as: :date_time, readonly: true
       field :profile_picture, as: :file, is_image: true

@@ -8,7 +8,7 @@ class Avo::Resources::CustomMail < Avo::BaseResource
   def fields
     field :id, as: :id, link_to_resource: true
     field :sender, as: :belongs_to, searchable: true
-    field :subject, as: :text, required: true, show_on: %i[index show]
+    field :subject, as: :text, required: true
     field :body, as: :textarea, required: true
     field :content, as: :textarea
     field :sent, as: :boolean, show_on: %i[index show new edit]
