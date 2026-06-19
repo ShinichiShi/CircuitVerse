@@ -167,7 +167,7 @@ export function setup() {
                         load(data);
                         const { simulatorVersion } = data;
                         if (simulatorVersion) {
-                            window.location.href = `/simulatorvue/edit/${__logix_project_id}?simver=${simulatorVersion}`; // eslint-disable-line camelcase
+                            window.location.href = `/simulator/edit/${__logix_project_id}?simver=${simulatorVersion}`; // eslint-disable-line camelcase
                         }
                         // eslint-disable-next-line import/no-named-as-default-member
                         simulationArea.changeClockTime(data.timePeriod || 500);
