@@ -52,6 +52,15 @@ class Users::SessionsController < Devise::SessionsController
 
   private
 
+    def after_sign_in_path_for(resource)
+      return_to = params[:return_to]
+      if return_to.present? && return_to.start_with?('/') && !return_to.start_with?('//')
+        return_to
+      else
+        stored_location_for(resource) || super
+      end
+    end
+
     def check_captcha
       return unless Flipper.enabled?(:recaptcha) && !verify_recaptcha
 
