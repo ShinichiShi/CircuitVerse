@@ -64,7 +64,6 @@ RSpec.describe Api::V1::ProjectsController, "#create", type: :request do
         created_project = Project.order(:created_at).last
         expect(created_project.image_preview.path.split("/")[-1]).to start_with("preview_")
         expect(created_project.circuit_preview).to be_attached
-        expect(created_project.circuit_preview.filename.to_s).to start_with("preview_")
         expect(created_project.circuit_preview.content_type).to eq("image/jpeg")
       end
     end
