@@ -5,6 +5,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   before_action :authenticate_user!
   before_action :check_access, only: [:update]
   before_action :set_details_access, except: %i[index me]
+  before_action -> { require_doorkeeper_scopes(:profile, :email) }, only: [:me]
 
   # GET api/v1/users
   def index
