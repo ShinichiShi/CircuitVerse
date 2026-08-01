@@ -22,6 +22,10 @@ RSpec.describe "OAuth PKCE flow", type: :request do
     [verifier, challenge]
   end
 
+  def extract_code(redirect_location)
+    Rack::Utils.parse_query(URI.parse(redirect_location).query)["code"]
+  end
+
   def authorize_with_pkce
     sign_in user
 
@@ -41,20 +45,17 @@ RSpec.describe "OAuth PKCE flow", type: :request do
 
     post "/oauth/authorize", params: auth_params.merge(commit: "Authorize")
 
-    expect(response).to have_http_status(:ok)
-    body = response.parsed_body
-    expect(body["status"]).to eq("redirect")
-    redirect_uri = body["redirect_uri"]
-    expect(redirect_uri).to include("code=")
-
-    code = Rack::Utils.parse_query(URI.parse(redirect_uri).query)["code"]
+    expect(response).to have_http_status(:found)
+    code = extract_code(response.headers["Location"])
     expect(code).to be_present
 
     [code_verifier, code]
   end
 
   it "returns an authorization code via the UI" do
-    _code_verifier, _code = authorize_with_pkce
+    _code_verifier, code = authorize_with_pkce
+
+    expect(code).to be_present
   end
 
   it "exchanges an authorization code + PKCE verifier for an access token" do
