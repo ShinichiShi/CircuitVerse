@@ -11,7 +11,8 @@ RSpec.describe "OAuth PKCE flow", type: :request do
     Doorkeeper::Application.create!(
       name: "PKCE Client",
       redirect_uri: "https://client.example.com/callback",
-      confidential: false
+      confidential: false,
+      scopes: "public profile email"
     )
   end
 
@@ -35,7 +36,7 @@ RSpec.describe "OAuth PKCE flow", type: :request do
       response_type: "code",
       client_id: application.uid,
       redirect_uri: application.redirect_uri,
-      scope: "public",
+      scope: "public profile email",
       code_challenge: code_challenge,
       code_challenge_method: "S256"
     }
@@ -59,7 +60,7 @@ RSpec.describe "OAuth PKCE flow", type: :request do
       response_type: "code",
       client_id: application.uid,
       redirect_uri: application.redirect_uri,
-      scope: "public",
+      scope: "public profile email",
       code_challenge: code_challenge,
       code_challenge_method: "S256",
       state: "csrf-state-value"
@@ -81,6 +82,23 @@ RSpec.describe "OAuth PKCE flow", type: :request do
     expect(code).to be_present
   end
 
+  it "rejects an authorization request from a public client with no code_challenge" do
+    sign_in user
+
+    post "/oauth/authorize", params: {
+      response_type: "code",
+      client_id: application.uid,
+      redirect_uri: application.redirect_uri,
+      scope: "public",
+      commit: "Authorize"
+    }
+
+    expect(response).to have_http_status(:found)
+    redirect_params = Rack::Utils.parse_query(URI.parse(response.headers["Location"]).query)
+    expect(redirect_params["error"]).to eq("invalid_request")
+    expect(redirect_params["code"]).to be_nil
+  end
+
   it "exchanges an authorization code + PKCE verifier for an access token" do
     code_verifier, code = authorize_with_pkce
 
@@ -96,6 +114,43 @@ RSpec.describe "OAuth PKCE flow", type: :request do
     body = response.parsed_body
     expect(body["access_token"]).to be_present
     expect(body["token_type"]).to eq("Bearer")
+    expect(body["refresh_token"]).to be_present
+  end
+
+  it "issues an access token that is a JWT identifying the resource owner" do
+    code_verifier, code = authorize_with_pkce
+
+    post "/oauth/token", params: {
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: application.redirect_uri,
+      client_id: application.uid,
+      code_verifier: code_verifier
+    }
+
+    access_token = response.parsed_body["access_token"]
+    decoded_payload = JsonWebToken.decode(access_token).first
+
+    expect(decoded_payload["user_id"]).to eq(user.id)
+    expect(decoded_payload["email"]).to eq(user.email)
+  end
+
+  it "authenticates an existing protected endpoint with the issued access token" do
+    code_verifier, code = authorize_with_pkce
+
+    post "/oauth/token", params: {
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: application.redirect_uri,
+      client_id: application.uid,
+      code_verifier: code_verifier
+    }
+    access_token = response.parsed_body["access_token"]
+
+    get "/api/v1/me", headers: { "Authorization" => "Bearer #{access_token}" }
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.dig("data", "id")).to eq(user.id.to_s)
   end
 
   it "rejects a token exchange with a code_verifier that doesn't match the code_challenge" do

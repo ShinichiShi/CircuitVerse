@@ -182,6 +182,7 @@ gem "oj", "~> 3.17"
 
 # Used for rate limiting
 gem "rack-attack"
+gem "rack-cors"
 
 gem "jsbundling-rails", "~> 1.0"
 

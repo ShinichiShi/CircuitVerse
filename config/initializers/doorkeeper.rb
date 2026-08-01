@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+TAURI_DESKTOP_OAUTH_APPLICATION_NAME = "CircuitVerse Desktop (Tauri)"
+
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (requires ORM extensions installed).
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms
@@ -119,6 +121,7 @@ Doorkeeper.configure do
   # See https://doorkeeper.gitbook.io/guides/configuration/other-configurations#custom-access-token-generator
   #
   # access_token_generator '::Doorkeeper::JWT'
+  access_token_generator "Doorkeeper::JsonWebTokenGenerator"
 
   # The controller +Doorkeeper::ApplicationController+ inherits from.
   # Defaults to +ActionController::Base+ unless +api_only+ is set, which changes the default to
@@ -175,8 +178,7 @@ Doorkeeper.configure do
 
   # Require non-confidential clients to use PKCE when using an authorization code
   # to obtain an access_token (disabled by default)
-  #
-  # force_pkce
+  force_pkce
 
   # Hash access and refresh tokens before persisting them.
   # This will disable the possibility to use +reuse_access_token+
@@ -230,7 +232,7 @@ Doorkeeper.configure do
   # `grant_type` - the grant type of the request (see Doorkeeper::OAuth)
   # `scopes` - the requested scopes (see Doorkeeper::OAuth::Scopes)
   #
-  # use_refresh_token
+  use_refresh_token
 
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default: false) if you want to enforce ownership of
@@ -449,9 +451,9 @@ Doorkeeper.configure do
   # so that the user skips the authorization step.
   # For example if dealing with a trusted application.
   #
-  # skip_authorization do |resource_owner, client|
-  #   client.superapp? or resource_owner.admin?
-  # end
+  skip_authorization do |_resource_owner, client|
+    client.name == TAURI_DESKTOP_OAUTH_APPLICATION_NAME
+  end
 
   # Configure custom constraints for the Token Introspection request.
   # By default this configuration option allows to introspect a token by another
