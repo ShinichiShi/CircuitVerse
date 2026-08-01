@@ -74,4 +74,19 @@ RSpec.describe "OAuth PKCE flow", type: :request do
     expect(body["access_token"]).to be_present
     expect(body["token_type"]).to eq("Bearer")
   end
+
+  it "rejects a token exchange with a code_verifier that doesn't match the code_challenge" do
+    _code_verifier, code = authorize_with_pkce
+
+    post "/oauth/token", params: {
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: application.redirect_uri,
+      client_id: application.uid,
+      code_verifier: "#{SecureRandom.urlsafe_base64(64)}-wrong"
+    }
+
+    expect(response).to have_http_status(:bad_request)
+    expect(response.parsed_body["error"]).to eq("invalid_grant")
+  end
 end

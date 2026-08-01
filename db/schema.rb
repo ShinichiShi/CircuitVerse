@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_19_140002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_01_152735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -360,6 +360,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_19_140002) do
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.bigint "application_id", null: false
+    t.string "code_challenge"
+    t.string "code_challenge_method"
     t.datetime "created_at", null: false
     t.integer "expires_in", null: false
     t.text "redirect_uri", null: false
