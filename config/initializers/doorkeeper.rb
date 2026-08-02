@@ -22,7 +22,10 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    current_user || redirect_to(new_user_session_url)
+    next current_user if current_user
+    next nil unless is_a?(Doorkeeper::AuthorizationsController) || is_a?(Doorkeeper::AuthorizedApplicationsController)
+
+    redirect_to(new_user_session_url)
   end
 
   # Restrict access to Doorkeeper's web UI to admins.
