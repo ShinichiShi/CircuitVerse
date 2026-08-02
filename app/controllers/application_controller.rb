@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   # URL is too long to store in the session
   def store_location_for(resource_or_scope, location)
     max_location_size = 200 # bytes
-    if location && location.length > max_location_size
+    if location && location.length > max_location_size && !location.start_with?("/oauth/authorize")
       super(resource_or_scope, "/")
     else
       super

@@ -52,6 +52,29 @@ RSpec.describe "OAuth PKCE flow", type: :request do
     [code_verifier, code]
   end
 
+  it "returns to the original /oauth/authorize request after signing in" do
+    _code_verifier, code_challenge = generate_pkce_pair
+
+    auth_params = {
+      response_type: "code",
+      client_id: application.uid,
+      redirect_uri: application.redirect_uri,
+      scope: "public",
+      code_challenge: code_challenge,
+      code_challenge_method: "S256",
+      state: "csrf-state-value"
+    }
+
+    get "/oauth/authorize", params: auth_params
+    expect(response).to redirect_to(new_user_session_path)
+
+    post "/users/sign_in", params: { user: { email: user.email, password: "password" } }
+    expect(response).to redirect_to(%r{/oauth/authorize\?})
+
+    follow_redirect!
+    expect(response).to have_http_status(:ok)
+  end
+
   it "returns an authorization code via the UI" do
     _code_verifier, code = authorize_with_pkce
 

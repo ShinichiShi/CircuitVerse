@@ -25,6 +25,7 @@ Doorkeeper.configure do
     next current_user if current_user
     next nil unless is_a?(Doorkeeper::AuthorizationsController) || is_a?(Doorkeeper::AuthorizedApplicationsController)
 
+    store_location_for(:user, request.fullpath)
     redirect_to(new_user_session_url)
   end
 
